@@ -7,24 +7,30 @@ import React, { useState } from 'react';
 // dynamic object keys
 
 const ControlledInputs = () => {
-  const [firstName, setFirstName] = useState('');
-  const [email, setEmail] = useState('');
+  const [person, setPerson] = useState({firstName: '', email: '',people: '' });
   const [people, setPeople] = useState([]);
+
+
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setPerson({...person, [name]: value})
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (firstName && email) {
-      const person = { id: new Date().getTime().toString(), firstName, email };
-      console.log(person);
+    if(person.firstName && person.email){
+      const newperson = { id: new Date().getTime(), ...person };
       setPeople((people) => {
-        return [...people, person];
+        return [...people, newperson];
       });
-      setFirstName('');
-      setEmail('');
-    } else {
-      console.log('empty values');
-    }
-  };
+
+    setPerson({firstName: '', email: '',people: '' })
+      
+  } else {
+    console.log("Empty or Invalid form")
+  }
+  }
   return (
     <>
       <article>
@@ -35,8 +41,8 @@ const ControlledInputs = () => {
               type='text'
               id='firstName'
               name='firstName'
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              value={person.firstName}
+              onChange={handleChange}
             />
           </div>
           <div className='form-control'>
@@ -45,13 +51,14 @@ const ControlledInputs = () => {
               type='email'
               id='email'
               name='email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={person.email}
+              onChange={handleChange}
             />
           </div>
           <button type='submit'>add person</button>
         </form>
-        {people.map((person, index) => {
+        {
+          people.map((person, index) => {
           const { id, firstName, email } = person;
           return (
             <div className='item' key={id}>
@@ -59,7 +66,8 @@ const ControlledInputs = () => {
               <p>{email}</p>
             </div>
           );
-        })}
+        })
+      }
       </article>
     </>
   );
